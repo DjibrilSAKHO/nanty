@@ -1,0 +1,57 @@
+from django.core.management.base import BaseCommand
+from django.db.models import Count
+from chatbot.models.entity import TextNormalization
+from django.db import connection
+import re
+from collections import Counter
+
+class Command(BaseCommand):
+    help = 'Analyse les phrases d\'entraînement pour générer des normalisations'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--min-frequency',
+            type=int,
+            default=3,
+            help='Fréquence minimum pour considérer un pattern'
+        )
+        parser.add_argument(
+            '--start-id',
+            type=int,
+            default=111,
+            help='ID de début pour l\'analyse'
+        )
+
+    def find_repetitions(self, phrases):
+        """Trouve les motifs de répétition de lettres"""
+        repetitions = []
+        pattern = re.compile(r'(\w)\1{2,}')
+        
+        for phrase in phrases:
+            matches = pattern.finditer(phrase.lower())
+            for match in matches:
+                repetitions.append(match.group())
+        return Counter(repetitions).most_common()
+
+    def handle(self, *args, **options):
+        # Récupération des phrases avec une requête optimisée
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT phrase 
+                FROM training_phrases 
+                WHERE id >= %s 
+                AND phrase IS NOT NULL
+                AND phrase != ''
+            """, [options['start_id']])
+            phrases = [row[0] for row in cursor.fetchall()]
+
+        self.stdout.write(f"Analyse de {len(phrases)} phrases...")
+
+        # Première analyse : répétitions
+        repetitions = self.find_repetitions(phrases)
+        
+        # Affichage des résultats préliminaires
+        self.stdout.write("\nMotifs de répétition trouvés :")
+        for pattern, count in repetitions:
+            if count >= options['min_frequency']:
+                self.stdout.write(f"{pattern}: {count} occurrences")
