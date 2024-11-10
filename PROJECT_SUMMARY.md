@@ -148,6 +148,10 @@ Pour commencer une nouvelle tâche, assurez-vous de :
 Documentation complète et code source disponibles dans le projet.
 
 ## Historique des Mises à Jour
+- 10/11/2024 : Ajout de la section gestion du code source
+  * Documentation de la configuration Git
+  * Documentation du workflow de mise à jour
+  * Documentation de la structure des commits
 - 10/11/2024 : Version initiale du résumé
   * Documentation de l'architecture complète
   * Documentation du pipeline NLP
@@ -167,3 +171,29 @@ Documentation complète et code source disponibles dans le projet.
 - Mettez à jour la date en haut du document
 - Vérifiez la cohérence des informations
 - Utilisez ./update_summary_date.sh pour mettre à jour la date
+
+## 8. Gestion du Code Source
+### Git
+- **Configuration** :
+  * Branch principale : main
+  * .gitignore configuré pour Python/Django
+  * Alias configuré : update-summary
+
+### Workflow de Mise à Jour
+1. **Documentation** :
+   - Script update_summary_date.sh pour la mise à jour des dates
+   - Commande `git update-summary` pour commiter les changements
+
+2. **Fichiers Exclus** :
+   - Fichiers Python compilés (__pycache__/)
+   - Base de données locale (db.sqlite3)
+   - Environnement virtuel (venv/)
+   - Dossiers spécifiques (backups/, output/, corpus/)
+   - Fichiers de données (*.jsonl, *.sql)
+   - Fichiers d'environnement (.env)
+
+3. **Structure des Commits** :
+   - docs: pour la documentation
+   - feat: pour les nouvelles fonctionnalités
+   - fix: pour les corrections de bugs
+   - chore: pour la maintenance
