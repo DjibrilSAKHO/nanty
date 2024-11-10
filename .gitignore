@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
+staticfiles/
+
+# Dossiers spécifiques au projet
+backups/
+output/
+corpus/
+
+# Fichiers de données
+*.jsonl
+*.sql
+
+# Environnement
+.env
+
+# Autres
+.DS_Store
+*.swp
+*.swo
